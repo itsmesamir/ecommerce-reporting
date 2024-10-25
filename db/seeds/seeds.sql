@@ -1,4 +1,3 @@
--- Seed Customers (20 entries)
 INSERT INTO customers (name, email, signup_date, location, lifetime_value)
 VALUES
     ('John Doe', 'john.doe@example.com', '2023-01-01', 'New York', 1500.00),
@@ -22,7 +21,6 @@ VALUES
     ('Quinn Walker', 'quinn.walker@example.com', '2023-06-28', 'Charlotte', 1150.00),
     ('Ruby Allen', 'ruby.allen@example.com', '2023-05-30', 'Sacramento', 850.00);
 
--- Seed Products (20 entries)
 INSERT INTO products (name, category, price)
 VALUES
     ('Laptop', 'Electronics', 999.99),
@@ -46,7 +44,6 @@ VALUES
     ('Washing Machine', 'Appliances', 599.99),
     ('Office Lamp', 'Furniture', 49.99);
 
--- Seed Orders (20 entries)
 INSERT INTO orders (customer_id, order_date, status)
 VALUES
     (1, '2023-05-01', 'COMPLETED'),
@@ -70,7 +67,6 @@ VALUES
     (19, '2023-11-01', 'PENDING'),
     (20, '2023-11-05', 'COMPLETED');
 
--- Seed Order Items (20 entries)
 INSERT INTO order_items (order_id, product_id, quantity, price)
 VALUES
     (1, 1, 1, 999.99),
@@ -94,7 +90,6 @@ VALUES
     (18, 19, 1, 599.99),
     (19, 20, 1, 49.99);
 
--- Seed Transactions (20 entries)
 INSERT INTO transactions (order_id, payment_status, payment_date, total_amount)
 VALUES
     (1, 'SUCCESS', '2023-05-02', 1399.97),

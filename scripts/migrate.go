@@ -1,19 +1,44 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
+
+	"github.com/joho/godotenv"
 )
 
 const (
 	migrationPath = "./db/migrations"
 	seedFilePath  = "./db/seeds/seeds.sql"
-	databaseURL   = "postgres://samiralam:password@localhost:5432/ecommerce_reporting?sslmode=disable"
 )
 
+func init() {
+	// Load environment variables from .env file
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+}
+
+func getDatabaseURL() string {
+	// Get individual database configuration values
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	name := os.Getenv("DB_NAME")
+
+	if user == "" || password == "" || host == "" || port == "" || name == "" {
+		log.Fatal("One or more required database environment variables are missing")
+	}
+
+	// Construct the database URL
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", user, password, host, port, name)
+}
+
 func runMigrationsUp() {
-	cmd := exec.Command("migrate", "-path", migrationPath, "-database", databaseURL, "up")
+	cmd := exec.Command("migrate", "-path", migrationPath, "-database", getDatabaseURL(), "up")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
@@ -25,7 +50,7 @@ func runMigrationsUp() {
 }
 
 func seedDatabase() {
-	cmd := exec.Command("psql", databaseURL, "-f", seedFilePath)
+	cmd := exec.Command("psql", getDatabaseURL(), "-f", seedFilePath)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
@@ -35,7 +60,7 @@ func seedDatabase() {
 }
 
 func runMigrationsDown() {
-	cmd := exec.Command("migrate", "-path", migrationPath, "-database", databaseURL, "down")
+	cmd := exec.Command("migrate", "-path", migrationPath, "-database", getDatabaseURL(), "down")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {

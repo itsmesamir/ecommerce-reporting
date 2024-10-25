@@ -8,7 +8,6 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-// Initialize Redis client
 var ctx = context.Background()
 var redisClient = redis.NewClient(&redis.Options{
 	Addr: "localhost:6379",

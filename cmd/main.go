@@ -7,7 +7,7 @@ import (
 
 	"ecommerce-reporting/constants"
 	controller "ecommerce-reporting/controllers"
-	"ecommerce-reporting/middleware" // Import your middleware package
+	"ecommerce-reporting/middleware"
 	repository "ecommerce-reporting/repositories"
 	service "ecommerce-reporting/services"
 	utils "ecommerce-reporting/utils"
@@ -20,7 +20,6 @@ func main() {
 	utils.ConnectDB()
 	defer utils.CloseDB()
 
-	// Initialize dependencies
 	repo := repository.NewReportsRepository(utils.DB)
 	svc := service.NewReportsService(repo)
 	ctrl := controller.NewReportsController(svc)
@@ -42,7 +41,6 @@ func main() {
 		rl.ServeHTTP(w, r, ctrl.GetCustomerReport)
 	}).Methods("GET")
 
-	// Start the server
 	log.Println("Server is running on port 8080")
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatalf("Server failed: %v", err)

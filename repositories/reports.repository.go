@@ -84,7 +84,7 @@ func (r *reportsRepository) GetSalesReport(ctx context.Context, startDate, endDa
 
 	// Helper function to execute a query and scan the result into a destination pointer
 	executeQuery := func(query string, args []interface{}, dest **float64, wg *sync.WaitGroup) {
-		defer wg.Done() // Decrement the counter when the function completes
+		defer wg.Done()
 
 		var result sql.NullFloat64
 		err := r.db.QueryRow(ctx, query, args...).Scan(&result)
@@ -140,7 +140,7 @@ func (r *reportsRepository) GetSalesReport(ctx context.Context, startDate, endDa
 	for _, q := range queries {
 		args := []interface{}{}
 		filteredQuery, filteredArgs := injectFilters(q.query, args)
-		wg.Add(1)                                                 // Increment the WaitGroup counter
+		wg.Add(1)
 		go executeQuery(filteredQuery, filteredArgs, q.dest, &wg) // Execute in a goroutine
 	}
 
@@ -187,7 +187,7 @@ func (r *reportsRepository) GetSalesReport(ctx context.Context, startDate, endDa
 func (r *reportsRepository) GetCustomerReport(ctx context.Context, signupStartDate, signupEndDate time.Time, minLifetimeValue *float64) ([]model.CustomerReport, error) {
 	var whereClauses []string
 	var args []interface{}
-	argIndex := 1 // Start index for query arguments
+	argIndex := 1
 
 	if !signupStartDate.IsZero() {
 		whereClauses = append(whereClauses, fmt.Sprintf("c.signup_date >= $%d", argIndex))

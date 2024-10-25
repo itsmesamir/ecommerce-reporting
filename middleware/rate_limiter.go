@@ -37,7 +37,6 @@ func (rl *RateLimiter) ServeHTTP(w http.ResponseWriter, r *http.Request, next ht
 	// Update the last request time
 	rl.lastRequest[ip] = time.Now()
 
-	// Increment the request count
 	rl.requests[ip]++
 
 	// Check if the limit has been exceeded
@@ -46,6 +45,5 @@ func (rl *RateLimiter) ServeHTTP(w http.ResponseWriter, r *http.Request, next ht
 		return
 	}
 
-	// Call the next handler
 	next(w, r)
 }
