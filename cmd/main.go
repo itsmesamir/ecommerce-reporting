@@ -3,8 +3,11 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 
+	"ecommerce-reporting/constants"
 	controller "ecommerce-reporting/controllers"
+	"ecommerce-reporting/middleware" // Import your middleware package
 	repository "ecommerce-reporting/repositories"
 	service "ecommerce-reporting/services"
 	utils "ecommerce-reporting/utils"
@@ -26,8 +29,18 @@ func main() {
 	r := mux.NewRouter()
 
 	api := r.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/sales-report", ctrl.GetSalesReport).Methods("GET")
-	api.HandleFunc("/customer-report", ctrl.GetCustomerReport).Methods("GET")
+
+	// Create a rate limiter with a limit given by MaxRequests and a time window of 1 minute
+	rl := middleware.NewRateLimiter(constants.MaxRequests,
+		time.Minute)
+
+	api.HandleFunc("/sales-report", func(w http.ResponseWriter, r *http.Request) {
+		rl.ServeHTTP(w, r, ctrl.GetSalesReport)
+	}).Methods("GET")
+
+	api.HandleFunc("/customer-report", func(w http.ResponseWriter, r *http.Request) {
+		rl.ServeHTTP(w, r, ctrl.GetCustomerReport)
+	}).Methods("GET")
 
 	// Start the server
 	log.Println("Server is running on port 8080")
